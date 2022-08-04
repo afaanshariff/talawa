@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:talawa/services/app_localization.dart';
 import 'package:talawa/services/queries_.dart';
-import 'package:talawa/views/pages/organization/Join-Organization-Widgets/org_tile.dart';
+import 'package:talawa/views/pages/organization/join_organization_widgets/org_tile.dart';
 import 'package:talawa/views/widgets/loader_gen.dart';
 import 'package:talawa/views/widgets/pagination_display.dart';
 
@@ -10,7 +11,6 @@ class OrganizationBody extends StatefulWidget {
   const OrganizationBody({
     Key key,
     @required this.fromProfile,
-    @required this.fToast,
     @required this.scaffoldKey,
     @required this.filter,
     this.query,
@@ -19,7 +19,7 @@ class OrganizationBody extends StatefulWidget {
   final String query;
   final bool fromProfile;
   final String filter;
-  final FToast fToast;
+
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   @override
@@ -73,16 +73,16 @@ class _OrganizationBodyState extends State<OrganizationBody> {
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: const <Widget>[
-                      SizedBox(
+                    children: <Widget>[
+                      const SizedBox(
                         height: 25,
                         width: 25,
                         child: CircularProgressIndicator(),
                       ),
-                      SizedBox(width: 15),
+                      const SizedBox(width: 15),
                       Text(
-                        'Loading...',
-                        style: TextStyle(
+                        '${AppLocalizations.of(context).translate("Loading")}...',
+                        style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
                           fontFamily: 'OpenSans',
@@ -126,7 +126,6 @@ class _OrganizationBodyState extends State<OrganizationBody> {
                   final organization = organizations[index] as Map;
 
                   return OrganisationTile(
-                    fToast: widget.fToast,
                     fromProfile: widget.fromProfile,
                     index: index,
                     organization: organization,
@@ -171,16 +170,16 @@ class _OrganizationBodyState extends State<OrganizationBody> {
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: const <Widget>[
-                      SizedBox(
+                    children: <Widget>[
+                      const SizedBox(
                         height: 25,
                         width: 25,
                         child: CircularProgressIndicator(),
                       ),
-                      SizedBox(width: 15),
+                      const SizedBox(width: 15),
                       Text(
-                        'Loading...',
-                        style: TextStyle(
+                        '${AppLocalizations.of(context).translate("Loading")}...',
+                        style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
                           fontFamily: 'OpenSans',
@@ -222,7 +221,6 @@ class _OrganizationBodyState extends State<OrganizationBody> {
                   final organization = organizations[index] as Map;
 
                   return OrganisationTile(
-                    fToast: widget.fToast,
                     fromProfile: widget.fromProfile,
                     index: index,
                     organization: organization,

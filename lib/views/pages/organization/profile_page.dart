@@ -3,12 +3,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:talawa/model/user.dart';
+import 'package:talawa/services/app_localization.dart';
 //pages are imported here
 import 'package:talawa/utils/gql_client.dart';
 import 'package:talawa/utils/ui_scaling.dart';
 import 'package:talawa/utils/uidata.dart';
 import 'package:talawa/view_models/page_view_model/profile_page_view_model.dart';
 import 'package:talawa/views/base_view.dart';
+import 'package:talawa/views/lang_selector.dart';
 import 'package:talawa/views/pages/organization/join_organization_view.dart';
 import 'package:talawa/views/pages/organization/update_profile_page_view.dart';
 import 'package:talawa/views/widgets/about_tile.dart';
@@ -25,9 +27,9 @@ class ProfilePage extends StatelessWidget {
       {@required BuildContext context, @required ProfilePageViewModel model}) {
     return ListTile(
         key: const Key('Organization Settings'),
-        title: const Text(
-          'Organization Settings',
-          style: TextStyle(fontSize: 18.0),
+        title: Text(
+          AppLocalizations.of(context).translate('Organization Settings'),
+          style: const TextStyle(fontSize: 18.0),
         ),
         leading: const Icon(
           Icons.settings,
@@ -50,9 +52,9 @@ class ProfilePage extends StatelessWidget {
         ? const SizedBox()
         : ListTile(
             key: const Key('Leave This Organization'),
-            title: const Text(
-              'Leave This Organization',
-              style: TextStyle(fontSize: 18.0),
+            title: Text(
+              AppLocalizations.of(context).translate('Leave This Organization'),
+              style: const TextStyle(fontSize: 18.0),
             ),
             leading: const Icon(
               Icons.exit_to_app,
@@ -63,8 +65,8 @@ class ProfilePage extends StatelessWidget {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertBox(
-                    message:
-                        "Are you sure you want to leave this organization?",
+                    message: AppLocalizations.of(context).translate(
+                        "Are you sure you want to leave this organization?"),
                     function: model.leaveOrg,
                   );
                 },
@@ -106,9 +108,9 @@ class ProfilePage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         ListTile(
-                            title: const Text(
-                              "Profile",
-                              style: TextStyle(
+                            title: Text(
+                              AppLocalizations.of(context).translate("Profile"),
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20.0,
                                 color: Colors.white,
@@ -152,7 +154,7 @@ class ProfilePage extends StatelessWidget {
                           padding: EdgeInsets.only(
                               left: SizeConfig.safeBlockHorizontal * 4),
                           child: Text(
-                              "Current Organization: ${model.orgName ?? 'No Organization Joined'}",
+                              "${AppLocalizations.of(context).translate("Current Organization")}: ${model.orgName ?? AppLocalizations.of(context).translate('No Organization Joined')}",
                               style: const TextStyle(
                                   fontSize: 16.0, color: Colors.white)),
                         ),
@@ -167,9 +169,10 @@ class ProfilePage extends StatelessWidget {
                         tiles: [
                           ListTile(
                             key: const Key('Update Profile'),
-                            title: const Text(
-                              'Update Profile',
-                              style: TextStyle(fontSize: 18.0),
+                            title: Text(
+                              AppLocalizations.of(context)
+                                  .translate('Update Profile'),
+                              style: const TextStyle(fontSize: 18.0),
                             ),
                             leading: const Icon(
                               Icons.edit,
@@ -188,9 +191,10 @@ class ProfilePage extends StatelessWidget {
                               ? const SizedBox()
                               : ListTile(
                                   key: const Key('Switch Organization'),
-                                  title: const Text(
-                                    'Switch Organization',
-                                    style: TextStyle(fontSize: 18.0),
+                                  title: Text(
+                                    AppLocalizations.of(context)
+                                        .translate('Switch Organization'),
+                                    style: const TextStyle(fontSize: 18.0),
                                   ),
                                   leading: const Icon(
                                     Icons.compare_arrows,
@@ -204,9 +208,10 @@ class ProfilePage extends StatelessWidget {
                                   }),
                           ListTile(
                               key: const Key('Join or Create New Organization'),
-                              title: const Text(
-                                'Join or Create New Organization',
-                                style: TextStyle(fontSize: 18.0),
+                              title: Text(
+                                AppLocalizations.of(context).translate(
+                                    'Join or Create New Organization'),
+                                style: const TextStyle(fontSize: 18.0),
                               ),
                               leading: const Icon(
                                 Icons.business,
@@ -230,10 +235,28 @@ class ProfilePage extends StatelessWidget {
                               : showLeaveOrgButton(
                                   context: context, model: model),
                           ListTile(
+                              key: const Key('CHANGE_LANGUAGE'),
+                              title: Text(
+                                AppLocalizations.of(context)
+                                    .translate('Change Language'),
+                                style: const TextStyle(fontSize: 18.0),
+                              ),
+                              leading: const Icon(
+                                Icons.translate,
+                                color: UIData.secondaryColor,
+                              ),
+                              onTap: () {
+                                pushNewScreen(
+                                  context,
+                                  screen: LanguageSelectorPage(),
+                                );
+                              }),
+                          ListTile(
                               key: const Key('Logout'),
-                              title: const Text(
-                                "Logout",
-                                style: TextStyle(fontSize: 18.0),
+                              title: Text(
+                                AppLocalizations.of(context)
+                                    .translate("Logout"),
+                                style: const TextStyle(fontSize: 18.0),
                               ),
                               leading: const Icon(
                                 Icons.exit_to_app,
@@ -244,8 +267,9 @@ class ProfilePage extends StatelessWidget {
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AlertBox(
-                                          message:
-                                              "Are you sure you want to logout?",
+                                          message: AppLocalizations.of(context)
+                                              .translate(
+                                                  "Are you sure you want to logout?"),
                                           function: () => model.authController
                                               .logout(context));
                                     });

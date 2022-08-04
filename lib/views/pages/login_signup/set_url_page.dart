@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'package:flutter_logs/flutter_logs.dart';
 import 'package:talawa/routing_constants.dart';
+import 'package:talawa/services/app_localization.dart';
 import 'package:talawa/services/navigation_service.dart';
 import 'package:talawa/controllers/url_controller.dart';
 import 'package:talawa/services/preferences.dart';
@@ -11,6 +12,8 @@ import 'package:talawa/utils/loghelper.dart';
 import 'package:talawa/utils/ui_scaling.dart';
 import 'package:talawa/utils/uidata.dart';
 import 'package:talawa/utils/validator.dart';
+import 'package:talawa/views/lang_selector.dart';
+
 import 'package:talawa/views/widgets/url_page_widgets.dart';
 import '../../../locator.dart';
 
@@ -183,7 +186,7 @@ class _UrlPageState extends State<UrlPage>
                       child: TextFormField(
                         keyboardType: TextInputType.url,
                         validator: (value) =>
-                            Validator.validateURL(urlController.text),
+                            Validator.validateURL(urlController.text, context),
                         textAlign: TextAlign.left,
                         style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
@@ -197,7 +200,8 @@ class _UrlPageState extends State<UrlPage>
                           ),
                           prefixIcon:
                               const Icon(Icons.web, color: Colors.white),
-                          labelText: "Type Org URL Here",
+                          labelText: AppLocalizations.of(context)
+                              .translate("Type Org URL Here"),
                           labelStyle: const TextStyle(color: Colors.white),
                           alignLabelWithHint: true,
                           hintText: 'talawa-graphql-api.herokuapp.com/graphql',
@@ -215,52 +219,88 @@ class _UrlPageState extends State<UrlPage>
                 children: [
                   Consumer<UrlController>(
                     builder: (context, urlControl, _) => ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30.0)),
-                        ),
-                        onPressed: () async {
-                          FocusScope.of(context).unfocus();
-                          if (_formKey.currentState.validate()) {
-                            _formKey.currentState.save();
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0)),
+                      ),
+                      onPressed: () async {
+                        FocusScope.of(context).unfocus();
+                        if (_formKey.currentState.validate()) {
+                          _formKey.currentState.save();
 
-                            setState(() {
-                              isUrlCalled = true;
-                            });
+                          setState(() {
+                            isUrlCalled = true;
+                          });
 
-                            try {
-                              await urlControl.checkAndSetUrl(
-                                  text: urlController.text);
-                              setApiUrl(urlControl.getDropDownValue);
-                              _setURL();
-                            } catch (e) {
-                              LogHelper().log(
-                                  LogLevel.ERROR,
-                                  widget.toStringShort(),
-                                  "checkAndSetUrl",
-                                  "Incorrect Oraganization",
-                                  exception: e as Exception);
+                          try {
+                            await urlControl.checkAndSetUrl(
+                                text: urlController.text);
+                            setApiUrl(urlControl.getDropDownValue);
+                            _setURL();
+                          } catch (e) {
+                            LogHelper().log(
+                                LogLevel.ERROR,
+                                widget.toStringShort(),
+                                "checkAndSetUrl",
+                                "Incorrect Oraganization",
+                                exception: e as Exception);
 
-                              CustomToast.exceptionToast(
-                                  msg: 'Incorrect Organization Entered');
-                              LogHelper().exportLogs();
-                            }
-
-                            setState(() {
-                              isUrlCalled = false;
-                            });
+                            CustomToast.exceptionToast(
+                              msg: AppLocalizations.of(context)
+                                  .translate('Incorrect Organization Entered'),
+                            );
+                            LogHelper().exportLogs();
                           }
-                        },
-                        child: isUrlCalled
-                            ? SizedBox(
-                                height: SizeConfig.safeBlockVertical * 1.75,
-                                width: SizeConfig.safeBlockHorizontal * 3.5,
-                                child: const CircularProgressIndicator(
-                                    backgroundColor: Colors.white),
-                              )
-                            : Text(saveMsg)),
+
+                          setState(() {
+                            isUrlCalled = false;
+                          });
+                        }
+                      },
+                      child: isUrlCalled
+                          ? SizedBox(
+                              height: SizeConfig.safeBlockVertical * 1.75,
+                              width: SizeConfig.safeBlockHorizontal * 3.5,
+                              child: const CircularProgressIndicator(
+                                backgroundColor: Colors.white,
+                              ),
+                            )
+                          : Text(
+                              AppLocalizations.of(context).translate(saveMsg),
+                            ),
+                    ),
                   ),
                 ],
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          LanguageSelectorPage(),
+                      fullscreenDialog: true,
+                      transitionDuration: const Duration(milliseconds: 500),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        final tween = Tween(
+                          begin: const Offset(0.0, 1.0),
+                          end: Offset.zero,
+                        );
+
+                        final curvedAnimation = CurvedAnimation(
+                          parent: animation,
+                          curve: Curves.ease,
+                        );
+
+                        return SlideTransition(
+                          position: tween.animate(curvedAnimation),
+                          child: child,
+                        );
+                      },
+                    ),
+                  );
+                },
+                child: const Text('Select Language'),
               ),
             ],
           ),
